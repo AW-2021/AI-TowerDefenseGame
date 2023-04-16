@@ -10,7 +10,7 @@ class Enemy:
         self.height = height
         self.animation_count = 0
         self.health = 1
-        self.path = [] # List of points that define the path taken (currently hardcoded). Replace with path-finding algorithm
+        self.path = [(19, 224), (177, 235), (282, 283), (526, 277), (607, 217), (641, 105), (717, 57), (796, 83), (855, 222), (973, 284), (1046, 366)] # List of points that define the path taken (currently hardcoded). Replace with path-finding algorithm
         self.img = None
 
     def draw(self, win):
