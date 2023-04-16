@@ -10,7 +10,7 @@ class Game:
         self.towers = []
         self.lives = 10
         self.money = 100
-        self.bg = pygame.image.load(os.path.join("../assets/backgrounds", "game_background_3.png"))
+        self.bg = pygame.image.load(os.path.join("assets/backgrounds", "game_background_3.png"))
         self.bg = pygame.transform.scale(self.bg, (self.width, self.height))
         # self.clicks = []
 
