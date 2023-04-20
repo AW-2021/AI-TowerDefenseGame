@@ -1,12 +1,13 @@
 import pygame
 import os
+from enemies.scorpion import Scorpion
 
 class Game:
     def __init__(self):
         self.width = 1300
         self.height = 700
         self.win = pygame.display.set_mode((self.width, self.height))
-        self.enemys = []
+        self.enemies = [Scorpion(),]
         self.towers = []
         self.lives = 10
         self.money = 100
@@ -19,7 +20,7 @@ class Game:
         clock = pygame.time.Clock()
 
         while run:
-            clock.tick(60)
+            clock.tick(30)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
@@ -30,6 +31,17 @@ class Game:
                     # self.clicks.append(pos)
                     # print(self.clicks)
                     pass
+            
+            # Loop through enemies
+            to_delete = []
+            for enemy in self.enemies:
+                if enemy.x < -5:
+                    to_delete.append(enemy)
+
+            # Delete all enemeies off the screen
+            for d in to_delete:
+                self.enemies.remove(d)
+
 
             self.draw()
 
@@ -40,6 +52,10 @@ class Game:
         # for p in self.clicks:
             ## draw.circle => (rendering surface, colour, position(x, y), circle radius, fill or not)
             # pygame.draw.circle(self.win, (255,0,0), (p[0], p[1]), 5, 0)                    
+        
+        for enemy in self.enemies:
+            enemy.draw(self.win)
+
         pygame.display.update()
 
 g = Game()
