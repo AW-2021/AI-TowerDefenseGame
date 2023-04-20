@@ -2,8 +2,7 @@ import pygame
 import math
 
 class Enemy:
-    images = []
-
+    
     def __init__(self):
         self.width = 64
         self.height = 64
@@ -18,15 +17,17 @@ class Enemy:
         self.pathPos = 0
         self.moveCount = 0
         self.moveDist = 0
+        self.images = []
+        self.flipped = False
 
 
     def draw(self, win):
         # Draws enemy with given image
-        self.img = self.images[self.animation_count//3]
+        self.img = self.images[self.animation_count]
         self.animation_count += 1
 
         # Resetting back to first animation after looping through entire list of animations 
-        if self.animation_count >= len(self.images)*3:
+        if self.animation_count >= len(self.images):
             self.animation_count = 0
 
         win.blit(self.img, (self.x, self.y))
@@ -55,9 +56,20 @@ class Enemy:
         self.moveCount += 1
         direction = (x2-x1, y2-y1)
 
+        # Flipping image horizontally when the enemy turns around on path (-x direction)
+        if direction[0] < 0 and not(self.flipped):
+            self.flipped = True
+            for x, img in enumerate(self.images):
+                self.images[x] = pygame.transform.flip(img, True, False)
+                
+
         # Calculating how much distance moved from current point to next
-        x_move, y_move = (self.x + direction[0] * self.moveCount, self.y + direction[1] * self.moveCount)
+        x_move, y_move = ((self.x + direction[0] * self.moveCount), (self.y + direction[1] * self.moveCount))
         self.dist += math.sqrt((x_move - x1) ** 2 + (y_move - y1) ** 2)
+        print(self.dist)
+
+        self.x = x_move
+        self.y = y_move
         
         # Go to next point
         if self.dist >= moveDist:
@@ -66,9 +78,7 @@ class Enemy:
             self.pathPos += 1
             if self.pathPos >= len(self.path):
                 return False
-
-        self.x = x_move
-        self.y = y_move
+        
         return True
 
     def hit(self):
