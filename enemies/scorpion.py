@@ -9,5 +9,5 @@ class Scorpion(Enemy):
         add_str = str(x)
         if x < 10:
             add_str = "0" + add_str
-        images.append(pygame.image.load(os.path.join("assets/enemies/PNG/1", "1_enemies_1_run_0" + add_str + ".png")))
+        images.append(pygame.transform.scale(pygame.image.load(os.path.join("assets/enemies/PNG/1", "1_enemies_1_run_0" + add_str + ".png")), (64, 64) ))
             
