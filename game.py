@@ -1,13 +1,15 @@
 import pygame
 import os
 from enemies.scorpion import Scorpion
+from enemies.wizard import Wizard
+from enemies.ghost import Ghost
 
 class Game:
     def __init__(self):
         self.width = 1300
         self.height = 700
         self.win = pygame.display.set_mode((self.width, self.height))
-        self.enemies = [Scorpion(),]
+        self.enemies = [Wizard(),]
         self.towers = []
         self.lives = 10
         self.money = 100
@@ -20,6 +22,7 @@ class Game:
         clock = pygame.time.Clock()
 
         while run:
+            pygame.time.delay(500)
             clock.tick(30)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
