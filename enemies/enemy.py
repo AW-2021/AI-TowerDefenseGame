@@ -9,7 +9,7 @@ class Enemy:
         self.animation_count = 0
         self.health = 1
         self.velocity = 3
-        self.path = [(-10, 224), (1, 224), (177, 235), (282, 283), (526, 277), (607, 217), (641, 105), (717, 57), (796, 83), (855, 222), (973, 284), (1046, 366), (1022, 458), (894, 492), (740, 504), (580, 542), (148, 541), (85, 452), (52, 345), (1, 335), (-20, 355)] # List of points that define the path taken (currently hardcoded). Replace with path-finding algorithm
+        self.path = [(-10, 224), (19, 224), (177, 235), (282, 283), (526, 277), (607, 217), (641, 105), (717, 57), (796, 83), (855, 222), (973, 284), (1046, 366), (1022, 458), (894, 492), (740, 504), (580, 542), (148, 541), (85, 442), (52, 335), (1, 305), (-20, 345)] # List of points that define the path taken (currently hardcoded). Replace with path-finding algorithm
         self.x = self.path[0][0]
         self.y = self.path[0][1]
         self.img = None
@@ -30,9 +30,13 @@ class Enemy:
         if self.animation_count >= len(self.images):
             self.animation_count = 0
 
-        win.blit(self.img, (self.x - self.img.get_width()/2, self.y - self.img.get_height()/2 - 20))
+        # for pos in self.path:
+        #     pygame.draw.circle(win, (255,0,0), pos, 10, 0)
+
+        win.blit(self.img, (self.x - self.img.get_width()/2, self.y - self.img.get_height()/2 - 35))
         self.move()
 
+    
     def collide(self, X, Y):
         # Returns if position has hit enemy
         if X <= self.x + self.width and X >= self.x:
@@ -40,6 +44,7 @@ class Enemy:
                 return True
 
         return False
+    
     
     def move(self):
         # Move enemy
@@ -82,13 +87,12 @@ class Enemy:
                     self.pathPos += 1
 
             else: # Moving upwards
-                if self.x <= x2 and self.y <= y2:
+                if self.x <= x2 and self.y >= y2:
                     self.pathPos += 1
         
-     
 
     def hit(self):
-        # Returns if an enemy has died and removes one health
+        # Returns if an enemy has died & removes 1 health
         self.health -= 1
         if self.health <= 0:
             return True
