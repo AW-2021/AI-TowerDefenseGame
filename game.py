@@ -22,8 +22,8 @@ class Game:
         clock = pygame.time.Clock()
 
         while run:
-            pygame.time.delay(500)
-            clock.tick(30)
+            # pygame.time.delay(500)
+            clock.tick(60)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
@@ -38,7 +38,7 @@ class Game:
             # Loop through enemies
             to_delete = []
             for enemy in self.enemies:
-                if enemy.x < -5:
+                if enemy.x < -15:
                     to_delete.append(enemy)
 
             # Delete all enemeies off the screen
