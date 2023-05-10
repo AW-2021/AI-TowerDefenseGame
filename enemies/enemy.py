@@ -7,6 +7,7 @@ class Enemy:
         self.width = 64
         self.height = 64
         self.animation_count = 0
+        self.max_health=1
         self.health = 1
         self.velocity = 3
         self.path = [(-10, 224), (19, 224), (177, 235), (282, 283), (526, 277), (607, 217), (641, 105), (717, 57), (796, 83), (855, 222), (973, 284), (1046, 366), (1022, 458), (894, 492), (740, 504), (580, 542), (148, 541), (85, 442), (52, 335), (1, 305), (-20, 345)] # List of points that define the path taken (currently hardcoded). Replace with path-finding algorithm
@@ -34,6 +35,7 @@ class Enemy:
         #     pygame.draw.circle(win, (255,0,0), pos, 10, 0)
 
         win.blit(self.img, (self.x - self.img.get_width()/2, self.y - self.img.get_height()/2 - 35))
+        self.draw_health_bar(win)
         self.move()
 
     
@@ -91,8 +93,26 @@ class Enemy:
                     self.pathPos += 1
         
 
-    def hit(self):
-        # Returns if an enemy has died & removes 1 health
-        self.health -= 1
+    def hit(self, damage):
+        """
+        Returns if an enemy has died and removes one health
+        each call
+        :return: Bool
+        """
+        self.health -= damage
         if self.health <= 0:
             return True
+        return False
+    
+    def draw_health_bar(self, win):
+        """
+        draw health bar above enemy
+        :param win: surface
+        :return: None
+        """
+        length = 50
+        move_by = length / self.max_health
+        health_bar = round(move_by * self.health)
+
+        pygame.draw.rect(win, (255,0,0), (self.x-30, self.y-75, length, 10), 0)
+        pygame.draw.rect(win, (0, 255, 0), (self.x-30, self.y - 75, health_bar, 10), 0)

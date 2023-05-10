@@ -12,6 +12,6 @@ class Ghost(Enemy):
             add_str = str(x)
             if x < 10:
                 add_str = "0" + add_str
-            self.images.append(pygame.transform.scale(pygame.image.load(os.path.join("assets/enemies/PNG/9", "9_enemies_1_run_0" + add_str + ".png")), (128, 64) ))
+            self.images.append(pygame.transform.scale(pygame.image.load(os.path.join("game_assets/enemies/PNG/9", "9_enemies_1_run_0" + add_str + ".png")), (128, 64) ))
             
             
