@@ -44,6 +44,7 @@ from towers.supportTower import DamageTower, RangeTower
 from menu.menu import VerticalMenu, PlayPauseButton
 import time
 import random
+import math
 pygame.font.init()
 pygame.init()
 
@@ -61,12 +62,16 @@ game_layout = np.array([
 
 
 #57 possible tower positions
-towerpositions = [(50, 50), (50, 150), (50, 250), (50, 350), (50, 450), (50, 550), (50, 1250), (150, 750), (150, 850), (150, 950),
-                  (150, 1050), (150, 1250), (250, 50), (250, 150), (250, 250), (250, 350), (250, 450), (250, 550), (250, 650), (250, 750), 
-                  (250, 850), (250, 950), (250, 1050), (250, 1250), (350, 50), (350, 150), (350, 250), (350, 350), (350, 450), (350, 550), 
-                  (350, 650), (350, 750), (350, 850), (350, 950), (350, 1050), (350, 1250), (450, 350), (450, 450), (450, 550), (450, 650),
-                  (450, 750), (450, 1250), (550, 50), (550, 150), (550, 350), (550, 450), (550, 550), (550, 650), (550, 750), (550, 950),
-                  (550, 1250), (650, 50), (650, 150), (650, 950), (650, 1050), (650, 1150), (650, 1250)]
+towerpositions = [(50, 50), (150, 50), (250, 50), (350, 50), (450, 50), (550, 50), (1250, 50), (750, 150), (850, 150), (950, 150), (1050, 150),
+                   (1250, 150), (50, 250), (150, 250), (250, 250), (350, 250), (450, 250), (550, 250), (650, 250), (750, 250), (850, 250), 
+                   (950, 250), (1050, 250), (1250, 250), (50, 350), (150, 350), (250, 350), (350, 350), (450, 350), (550, 350), (650, 350), 
+                   (750, 350), (850, 350), (950, 350), (1050, 350), (1250, 350), (350, 450), (450, 450), (550, 450), (650, 450), (750, 450),
+                   (1250, 450), (50, 550), (150, 550), (350, 550), (450, 550), (550, 550), (650, 550), (750, 550), (950, 550), (1250, 550),
+                   (50, 650), (150, 650), (950, 650), (1050, 650), (1150, 650), (1250, 650)]
+path_positions =[(650, 50), (750, 50), (850, 50), (950, 50), (1050, 50), (1150, 50), (50, 150), (150, 150), (250, 150), (350, 150), 
+                 (450, 150), (550, 150), (650, 150), (1150, 150), (1150, 250), (1150, 350), (50, 450), (150, 450), (250, 450),
+                 (850, 450), (950, 450), (1050, 450), (1150, 450),(250, 550), (850, 550), (1050, 550), (1150, 550), (250, 650), 
+                 (350, 650), (450, 650), (550, 650), (650, 650), (750, 650), (850, 650)]
 
 
 lives_img = pygame.image.load(os.path.join("game_assets","heart.png")).convert_alpha()
@@ -213,17 +218,40 @@ class Game:
             
             numberOfEnemies = len(self.enemys)
             placeTower = False #bool should we buy a tower or not
-            if(self.money)>500:        
+            
+            #AI inner working, should we buy tower or not , and the x and y calculation
+            if(self.money)>500:   
+                '''RANDOMLY SELECT A POSITION FROM AVAIALABLE POSITIONS     
                 place = random.randint(0,len(towerpositions)-1)
                 x = (towerpositions[place])[0]
                 y = (towerpositions[place])[1]
                 del towerpositions[place]
-                self.attack_towers.append(ArcherTowerLong(y,x))
+                '''
+                
+                #Check which positions are closest to path:
+                bestPos = []
+                for position in towerpositions:
+                    #loop through all towerpositions against path positions and see which tower positions are one hop away
+                    numberOfOneHopPathPieces = 0
+                    for pathCordinate in path_positions:
+                        if distance(position,pathCordinate) < 101:
+                            numberOfOneHopPathPieces += 1
+                    
+                    bestPos.append(numberOfOneHopPathPieces)
+                    
+                place = bestPos.index(max(bestPos))
+                x = (towerpositions[place])[0]
+                y = (towerpositions[place])[1]
+                del towerpositions[place]
+                del bestPos[place]
+                placeTower = True
+            if placeTower: #
+                self.attack_towers.append(ArcherTowerLong(x,y))
                 self.money -= 500
             self.draw()
-            
 
     def draw(self):
+        
         self.win.blit(self.bg, (0,0))
         #draw grid:
         #for linex in range(00,1351):
@@ -327,3 +355,7 @@ class Game:
         self.win.blit(text, (10 , 20))
 
         pygame.display.update()
+        
+            
+def distance(p0, p1):
+    return math.sqrt((p0[0] - p1[0])**2 + (p0[1] - p1[1])**2)
