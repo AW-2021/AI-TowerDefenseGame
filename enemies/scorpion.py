@@ -8,7 +8,8 @@ class Scorpion(Enemy):
         super().__init__()
         self.images = []
         self.money = 3
-        
+        self.max_health=2
+        self.health = self.max_health
         for x in range (20):
             add_str = str(x)
             if x < 10:

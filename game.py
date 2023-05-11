@@ -107,7 +107,7 @@ class Game:
         run = True
         clock = pygame.time.Clock()
         while run:
-            clock.tick(500)
+            clock.tick(100)
 
             if self.pause == False:
                 # gen monsters
@@ -245,7 +245,47 @@ class Game:
 
     def draw(self):
         self.win.blit(self.bg, (0,0))
-
+        #draw grid:
+        #for linex in range(00,1351):
+        linex=100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        pygame.draw.line(self.win,(255,255,255),(0,linex),(1350,linex),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        pygame.draw.line(self.win,(255,255,255),(0,linex),(1350,linex),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        pygame.draw.line(self.win,(255,255,255),(0,linex),(1350,linex),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        pygame.draw.line(self.win,(255,255,255),(0,linex),(1350,linex),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        pygame.draw.line(self.win,(255,255,255),(0,linex),(1350,linex),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        pygame.draw.line(self.win,(255,255,255),(0,linex),(1350,linex),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        pygame.draw.line(self.win,(255,255,255),(0,linex),(1350,linex),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        pygame.draw.line(self.win,(255,255,255),(0,linex),(1350,linex),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        linex = linex +100
+        pygame.draw.line(self.win,(255,255,255),(linex,0),(linex,700),1)
+        linex = linex +100
+        
+        
         # draw placement rings
         if self.moving_object:
             for tower in self.attack_towers:

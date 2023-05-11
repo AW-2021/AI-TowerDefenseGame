@@ -10,7 +10,7 @@ class Enemy:
         self.max_health=1
         self.health = 1
         self.velocity = 3
-        self.path = [(-10, 224), (19, 224), (177, 235), (282, 283), (526, 277), (607, 217), (641, 105), (717, 57), (796, 83), (855, 222), (973, 284), (1046, 366), (1022, 458), (894, 492), (740, 504), (580, 542), (148, 541), (85, 442), (52, 335), (1, 305), (-20, 345)] # List of points that define the path taken (currently hardcoded). Replace with path-finding algorithm
+        self.path = [(-10,170),(650,170),(650,70),(1150,70),(1150,570),(1050,570),(1050,470),(850,470),(850,670),(250,670),(250,470),(-20,470)] # List of points that define the path taken (currently hardcoded). Replace with path-finding algorithm
         self.x = self.path[0][0]
         self.y = self.path[0][1]
         self.img = None

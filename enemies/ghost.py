@@ -7,7 +7,9 @@ class Ghost(Enemy):
     def __init__(self):
         super().__init__()
         self.images = []
-
+        self.money = 10
+        self.max_health=10
+        self.health = self.max_health
         for x in range (20):
             add_str = str(x)
             if x < 10:
