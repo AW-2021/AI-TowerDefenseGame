@@ -1,3 +1,8 @@
+'''
+
+This is the playable game for GUI check purposes, the AI is in AI.py
+
+'''
 
 import pygame
 import os
@@ -68,7 +73,7 @@ class Game:
         self.bg = pygame.image.load(os.path.join("game_assets", "bg.png"))
         self.bg = pygame.transform.scale(self.bg, (self.width, self.height))
         self.timer = time.time()
-        self.life_font = pygame.font.SysFont("comicsans", 65)
+        self.life_font = pygame.font.SysFont("comicsans", 40)
         self.selected_tower = None
         self.menu = VerticalMenu(self.width - side_img.get_width() + 70, 250, side_img)
         self.menu.add_btn(buy_archer, "buy_archer", 500)

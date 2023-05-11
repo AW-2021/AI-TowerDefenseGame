@@ -1,4 +1,5 @@
-from game import Game
+#from game import Game
+from AI import Game
 import pygame
 import os
 
