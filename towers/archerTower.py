@@ -12,13 +12,14 @@ upgrade_btn = pygame.transform.scale(pygame.image.load(os.path.join("game_assets
 tower_imgs1 = []
 archer_imgs1 = []
 # load archer tower images
-for x in range(5,9):
+for x in range(5,8):
     tower_imgs1.append(pygame.transform.scale(
         pygame.image.load(os.path.join("game_assets/towers", str(x) + ".png")).convert_alpha(),
         (90, 90)))
 
 # load archer images
-for x in range(29,35):
+archer_imgs1.append(pygame.image.load(os.path.join("game_assets/towers", '35' + ".png")).convert_alpha())
+for x in range(54,60):
     archer_imgs1.append(
         pygame.image.load(os.path.join("game_assets/towers", str(x) + ".png")).convert_alpha())
 
@@ -51,7 +52,7 @@ class ArcherTowerLong(Tower):
 
     def draw(self, win):
         """
-        draw the arhcer tower and animated archer
+        draw the archer tower and animated archer
         :param win: surface
         :return: int
         """
@@ -146,7 +147,8 @@ class ArcherTowerShort(ArcherTowerLong):
         self.left = True
         self.damage = 2
         self.original_damage = self.damage
+        self.name = "archer2"
 
         self.menu = Menu(self, self.x, self.y, menu_bg, [2500, 5500, "MAX"])
         self.menu.add_btn(upgrade_btn, "Upgrade")
-        self.name = "archer2"
+        
