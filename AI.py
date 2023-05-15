@@ -3,7 +3,7 @@ This is the AI that will run the game
 
 Verison 1: Heuristic Approach:
 Heuristic:
-•	Easier, less memory cosuming
+•	Easier, less memory consuming
 •	Issue: How do we give values to the heuristic, 
 •	Solution :Calculate heuristic according to current variables:
 
@@ -15,8 +15,8 @@ Heuristic:
     
     Should AI add another tower? (default = add where the enemies are the most)
     > Number of enemies left: If number of enemies more, better to add a tower
-    > All enemies near existing towers: If all enemies are near existing towers and the towers are not capable of killing the enemies, 
-    better to add a tower
+    > All enemies near existing towers: If all enemies are near existing towers and the towers are not capable of 
+        killing the enemies, better to add a tower
     > Enemies distance from end: If alot of enemies closer to end, better to add a tower
     > MAYBE: Tower radius overlapping: Better if it does not overlap
     > How much of the road does this position cover: Better if more road is covered
@@ -39,6 +39,7 @@ import pygame
 import os
 from enemies.scorpion import Scorpion
 from enemies.wizard import Wizard
+from enemies.ogre import Ogre
 from towers.archerTower import ArcherTowerLong, ArcherTowerShort
 from towers.supportTower import DamageTower, RangeTower
 from menu.menu import VerticalMenu, PlayPauseButton
@@ -105,7 +106,7 @@ waves = [
     [50, 0, 0],
     [100, 0, 0],
     [0, 20, 0],
-    [0, 50, 0, 1],
+    [0, 50, 0],
     [0, 100, 0],
     [20, 100, 0],
     [50, 100, 0],
@@ -124,7 +125,7 @@ class Game:
         self.enemys = []
         self.attack_towers = []
         self.support_towers = []
-        self.lives = 10
+        self.lives = 20
         self.money = 2000
         self.bg = pygame.image.load(os.path.join("game_assets", "bg.png"))
         self.bg = pygame.transform.scale(self.bg, (self.width, self.height))
@@ -143,6 +144,7 @@ class Game:
         self.music_on = True
         self.playPauseButton = PlayPauseButton(play_btn, pause_btn, 10, self.height - 85)
         self.soundButton = PlayPauseButton(sound_btn, sound_btn_off, 90, self.height - 85)
+        self.lose = True
 
     def gen_enemies(self):
         """
@@ -156,7 +158,7 @@ class Game:
                 self.pause = True
                 self.playPauseButton.paused = self.pause
         else:
-            wave_enemies = [Scorpion(), Wizard()]
+            wave_enemies = [Scorpion(),Wizard(), Ogre()]
             for x in range(len(self.current_wave)):
                 if self.current_wave[x] != 0:
                     self.enemys.append(wave_enemies[x])
@@ -178,6 +180,8 @@ class Game:
                     self.gen_enemies()
 
             pos = pygame.mouse.get_pos()
+            
+            # main event loop below
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
@@ -208,7 +212,8 @@ class Game:
 
                 # if you lose
                 if self.lives <= 0:
-                    print("You Lose")
+                    self.lose = True
+                    print("You Lost! :(")
                     run = False
                
                         
@@ -217,38 +222,11 @@ class Game:
             ##################################################################
             
             numberOfEnemies = len(self.enemys)
-            placeTower = False #bool should we buy a tower or not
+            placeTower = False # bool - should we buy a tower or not
+
+            self.assignWeightHeuristics(placeTower)
             
-            #AI inner working, should we buy tower or not , and the x and y calculation
-            if(self.money)>500:   
-                '''RANDOMLY SELECT A POSITION FROM AVAIALABLE POSITIONS     
-                place = random.randint(0,len(towerpositions)-1)
-                x = (towerpositions[place])[0]
-                y = (towerpositions[place])[1]
-                del towerpositions[place]
-                '''
-                
-                #Check which positions are closest to path:
-                bestPos = []
-                for position in towerpositions:
-                    #loop through all towerpositions against path positions and see which tower positions are one hop away
-                    numberOfOneHopPathPieces = 0
-                    for pathCordinate in path_positions:
-                        if distance(position,pathCordinate) < 101:
-                            numberOfOneHopPathPieces += 1
-                    
-                    bestPos.append(numberOfOneHopPathPieces)
-                    
-                place = bestPos.index(max(bestPos))
-                x = (towerpositions[place])[0]
-                y = (towerpositions[place])[1]
-                del towerpositions[place]
-                del bestPos[place]
-                placeTower = True
-            if placeTower: #
-                self.attack_towers.append(ArcherTowerLong(x,y))
-                self.money -= 500
-            self.draw()
+            
 
     def draw(self):
         
@@ -355,7 +333,43 @@ class Game:
         self.win.blit(text, (10 , 20))
 
         pygame.display.update()
-        
+
+
+    def assignWeightHeuristics(self, placeTower):
+        #AI inner working, should we buy tower or not , and the x and y calculation
+        if(self.money) > 500:   
+            '''RANDOMLY SELECT A POSITION FROM AVAIALABLE POSITIONS     
+            place = random.randint(0,len(towerpositions)-1)
+            x = (towerpositions[place])[0]
+            y = (towerpositions[place])[1]
+            del towerpositions[place]
+            '''
             
+            # Check which positions are closest to path:
+            bestPos = []
+            for position in towerpositions:
+                #loop through all towerpositions against path positions and see which tower positions are one hop away
+                numberOfOneHopPathPieces = 0
+                for pathCoordinate in path_positions:
+                    if distance(position,pathCoordinate) < 101: # Each square in the grid is 100 px
+                        numberOfOneHopPathPieces += 1
+                
+                bestPos.append(numberOfOneHopPathPieces)
+                
+            place = bestPos.index(max(bestPos))
+            x = (towerpositions[place])[0]
+            y = (towerpositions[place])[1]
+            del towerpositions[place]
+            del bestPos[place]
+            placeTower = True
+        if placeTower: 
+            self.attack_towers.append(ArcherTowerShort(x,y))
+            self.money -= 500
+
+        self.draw()
+    
+        
+# To calculate Euclidean distance between any two points on the grid.
+# Right now we're passing current tower position and path position    
 def distance(p0, p1):
     return math.sqrt((p0[0] - p1[0])**2 + (p0[1] - p1[1])**2)
