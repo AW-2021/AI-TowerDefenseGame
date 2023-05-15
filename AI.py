@@ -22,7 +22,6 @@ Heuristic:
     > How much of the road does this position cover: Better if more road is covered
     
     
-    
 Game layout
 
 |   0   0   0   0   0   0   1   1   1   1   1   1   0   |
@@ -34,6 +33,7 @@ Game layout
 |   0   0   1   1   1   1   1   1   1   0   0   0   0   |
 
 '''
+
 import numpy as np
 import pygame
 import os
@@ -50,7 +50,7 @@ pygame.font.init()
 pygame.init()
 
 
-#Grid layout of the game , 1 is path , 0 is free space
+# Grid layout of the game , 1 is path , 0 is free space
 
 game_layout = np.array([
 (0,0,0,0,0,0,1,1,1,1,1,1,0),
@@ -62,7 +62,7 @@ game_layout = np.array([
 (0,0,1,1,1,1,1,1,1,0,0,0,0)])
 
 
-#57 possible tower positions
+# 57 possible tower positions
 towerpositions = [(50, 50), (150, 50), (250, 50), (350, 50), (450, 50), (550, 50), (1250, 50), (750, 150), (850, 150), (950, 150), (1050, 150),
                    (1250, 150), (50, 250), (150, 250), (250, 250), (350, 250), (450, 250), (550, 250), (650, 250), (750, 250), (850, 250), 
                    (950, 250), (1050, 250), (1250, 250), (50, 350), (150, 350), (250, 350), (350, 350), (450, 350), (550, 350), (650, 350), 
@@ -100,7 +100,7 @@ support_tower_names = ["range", "damage"]
 
 # waves are in form
 # frequency of enemies
-# (# scorpions, # wizards, # clubs, # swords)
+# (# scorpions, # wizards, # ogre)
 waves = [
     [20, 0, 0],
     [50, 0, 0],
@@ -111,7 +111,7 @@ waves = [
     [20, 100, 0],
     [50, 100, 0],
     [100, 100, 0],
-    [0, 0, 50, 3],
+    [0, 0, 50],
     [20, 0, 100],
     [20, 0, 150],
     [200, 100, 200],
@@ -125,6 +125,7 @@ class Game:
         self.enemys = []
         self.attack_towers = []
         self.support_towers = []
+        self.tower_list = []
         self.lives = 20
         self.money = 2000
         self.bg = pygame.image.load(os.path.join("game_assets", "bg.png"))
@@ -169,7 +170,7 @@ class Game:
         #pygame.mixer.music.play(loops=-1)
         run = True
         clock = pygame.time.Clock()
-        tower_list = []
+        # tower_list = []
         while run:
             clock.tick(100)
 
@@ -223,10 +224,62 @@ class Game:
             
             numberOfEnemies = len(self.enemys)
             placeTower = False # bool - should we buy a tower or not
+            
+            # HEREE
+            self.assignWeightHeuristics(placeTower, playerLife = self.lives, currentMoney = self.money, filledPositions = self.tower_list,  )
+    
+    
+    def assignWeightHeuristics(self, placeTower, playerLife, currentMoney, filledPositions):
 
-            self.assignWeightHeuristics(placeTower)
+        emptyPositions = towerpositions
+
+        print(playerLife)
+        print(currentMoney)
+        print(filledPositions)
+        #print(emptyPositions)
+
+        self.add_tower(placeTower)
+
+        
+        
+    def add_tower(self, placeTower):
+
+    #AI inner working, should we buy tower or not , and the x and y calculation
+        if(self.money) > 500:   
+            '''RANDOMLY SELECT A POSITION FROM AVAIALABLE POSITIONS     
+            place = random.randint(0,len(towerpositions)-1)
+            x = (towerpositions[place])[0]
+            y = (towerpositions[place])[1]
+            del towerpositions[place]
+            '''
             
-            
+            # Check which positions are closest to path:
+            bestPos = []
+            for position in towerpositions:
+                #loop through all towerpositions against path positions and see which tower positions are one hop away
+                numberOfOneHopPathPieces = 0
+                for pathCoordinate in path_positions:
+                    if distance(position,pathCoordinate) < 101: # Each square in the grid is 100 px
+                        numberOfOneHopPathPieces += 1
+                
+                bestPos.append(numberOfOneHopPathPieces)
+                
+            place = bestPos.index(max(bestPos))
+            x = (towerpositions[place])[0]
+            y = (towerpositions[place])[1]
+
+            # HEREE
+            self.tower_list.append([x,y])
+
+            del towerpositions[place]
+            del bestPos[place]
+            placeTower = True
+        if placeTower: 
+            self.attack_towers.append(ArcherTowerLong(x,y))
+            self.money -= 500
+
+        self.draw()            
+
 
     def draw(self):
         
@@ -285,6 +338,7 @@ class Game:
         # draw attack towers
         for tw in self.attack_towers:
             tw.draw(self.win)
+            tw.draw_radius(self.win)
 
         # draw support towers
         for tw in self.support_towers:
@@ -334,39 +388,6 @@ class Game:
 
         pygame.display.update()
 
-
-    def assignWeightHeuristics(self, placeTower):
-        #AI inner working, should we buy tower or not , and the x and y calculation
-        if(self.money) > 500:   
-            '''RANDOMLY SELECT A POSITION FROM AVAIALABLE POSITIONS     
-            place = random.randint(0,len(towerpositions)-1)
-            x = (towerpositions[place])[0]
-            y = (towerpositions[place])[1]
-            del towerpositions[place]
-            '''
-            
-            # Check which positions are closest to path:
-            bestPos = []
-            for position in towerpositions:
-                #loop through all towerpositions against path positions and see which tower positions are one hop away
-                numberOfOneHopPathPieces = 0
-                for pathCoordinate in path_positions:
-                    if distance(position,pathCoordinate) < 101: # Each square in the grid is 100 px
-                        numberOfOneHopPathPieces += 1
-                
-                bestPos.append(numberOfOneHopPathPieces)
-                
-            place = bestPos.index(max(bestPos))
-            x = (towerpositions[place])[0]
-            y = (towerpositions[place])[1]
-            del towerpositions[place]
-            del bestPos[place]
-            placeTower = True
-        if placeTower: 
-            self.attack_towers.append(ArcherTowerShort(x,y))
-            self.money -= 500
-
-        self.draw()
     
         
 # To calculate Euclidean distance between any two points on the grid.
