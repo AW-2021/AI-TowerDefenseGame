@@ -3,8 +3,8 @@ from AI import Game
 import pygame
 import os
 
-start_btn = pygame.image.load(os.path.join("game_assets", "button_play.png")).convert_alpha()
-logo = pygame.image.load(os.path.join("game_assets", "logo.png")).convert_alpha()
+start_btn = pygame.image.load(os.path.join("game_assets", "button_play2.png")).convert_alpha()
+logo = pygame.image.load(os.path.join("game_assets", "logo3.png")).convert_alpha()
 
 class MainMenu:
     def __init__(self, win):
@@ -13,7 +13,7 @@ class MainMenu:
         self.bg = pygame.image.load(os.path.join("game_assets", "bg.png"))
         self.bg = pygame.transform.scale(self.bg, (self.width, self.height))
         self.win = win
-        self.btn = (self.width/2 - start_btn.get_width()/2, 350, start_btn.get_width(), start_btn.get_height())
+        self.btn = (self.width/2 - start_btn.get_width()/2, 400, start_btn.get_width(), start_btn.get_height())
 
     def run(self):
         run = True
