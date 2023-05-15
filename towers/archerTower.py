@@ -130,7 +130,7 @@ for x in range(15,18):
         (90, 90)))
 
 # load archer images
-for x in range(40,45):
+for x in range(29,35):
     archer_imgs.append(
         pygame.image.load(os.path.join("game_assets/towers", str(x) + ".png")))
 
@@ -141,7 +141,7 @@ class ArcherTowerShort(ArcherTowerLong):
         self.tower_imgs = tower_imgs[:]
         self.archer_imgs = archer_imgs[:]
         self.archer_count = 0
-        self.range = 120
+        self.range = 150
         self.original_range = self.range
         self.inRange = False
         self.left = True
