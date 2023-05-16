@@ -226,16 +226,17 @@ class Game:
             placeTower = False # bool - should we buy a tower or not
             
             # HEREE
-            self.assignWeightHeuristics(placeTower, playerLife = self.lives, currentMoney = self.money, filledPositions = self.tower_list,  )
+            self.add_tower(placeTower)
+            #self.assignWeightHeuristics(placeTower, playerLife = self.lives, currentMoney = self.money, filledPositions = self.tower_list,  )
     
     
     def assignWeightHeuristics(self, placeTower, playerLife, currentMoney, filledPositions):
 
         emptyPositions = towerpositions
 
-        print(playerLife)
-        print(currentMoney)
-        print(filledPositions)
+        #print(playerLife)
+        #print(currentMoney)
+        #print(filledPositions)
         #print(emptyPositions)
 
         self.add_tower(placeTower)
@@ -338,7 +339,7 @@ class Game:
         # draw attack towers
         for tw in self.attack_towers:
             tw.draw(self.win)
-            tw.draw_radius(self.win)
+            #tw.draw_radius(self.win)
 
         # draw support towers
         for tw in self.support_towers:
