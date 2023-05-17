@@ -314,8 +314,8 @@ class Game:
                 del weightList[place]
                 placeTower = True
 
-                if placeTower:
-                    self.tower_list.append([x,y])
+            if placeTower:
+                self.tower_list.append([x,y])
                 
 
 
