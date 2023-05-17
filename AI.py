@@ -376,7 +376,7 @@ class Game:
         # draw attack towers
         for tw in self.attack_towers:
             tw.draw(self.win)
-            tw.draw_radius(self.win)
+            #tw.draw_radius(self.win)
 
         # draw support towers
         for tw in self.support_towers:
