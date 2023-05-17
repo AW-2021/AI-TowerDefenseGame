@@ -8,7 +8,7 @@ class Ogre(Enemy):
         super().__init__()
         self.images = []
         self.money = 10
-        self.max_health= 5
+        self.max_health = 5
         self.health = self.max_health
         for x in range (20):
             add_str = str(x)

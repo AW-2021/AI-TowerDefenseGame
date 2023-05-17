@@ -7,7 +7,7 @@ class Wizard(Enemy):
     def __init__(self):
         super().__init__()
         self.images = []
-        self.money = 6
+        self.money = 5
         self.max_health = 3
         self.health = self.max_health
         for x in range (20):
