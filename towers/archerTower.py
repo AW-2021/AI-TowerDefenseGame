@@ -12,7 +12,7 @@ upgrade_btn = pygame.transform.scale(pygame.image.load(os.path.join("game_assets
 tower_imgs1 = []
 archer_imgs1 = []
 # load archer tower images
-for x in range(5,8):
+for x in range(7,8):
     tower_imgs1.append(pygame.transform.scale(
         pygame.image.load(os.path.join("game_assets/towers", str(x) + ".png")).convert_alpha(),
         (90, 90)))
@@ -124,7 +124,7 @@ class ArcherTowerLong(Tower):
 tower_imgs = []
 archer_imgs = []
 # load archer tower images
-for x in range(15,18):
+for x in range(17,18):
     tower_imgs.append(pygame.transform.scale(
         pygame.image.load(os.path.join("game_assets/towers", str(x) + ".png")),
         (90, 90)))
