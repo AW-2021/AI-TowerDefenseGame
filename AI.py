@@ -1,8 +1,8 @@
 '''
 This is the AI that will run the game
 
-Verison 1: Heuristic Approach:
-Heuristic:
+Version 2 - Heuristic Approach:
+HEURISTIC:
 •	Easier, less memory consuming
 •	Issue: How do we give values to the heuristic, 
 •	Solution :Calculate heuristic according to current variables:
@@ -18,7 +18,7 @@ Heuristic:
     > All enemies near existing towers: If all enemies are near existing towers and the towers are not capable of 
         killing the enemies, better to add a tower
     > Enemies distance from end: If alot of enemies closer to end, better to add a tower
-    > MAYBE: Tower radius overlapping: Better if it does not overlap
+    > Tower radius overlapping: Better if it does not overlap
     > How much of the road does this position cover: Better if more road is covered
     
     
@@ -79,8 +79,8 @@ lives_img = pygame.image.load(os.path.join("game_assets","heart.png")).convert_a
 star_img = pygame.image.load(os.path.join("game_assets","star.png")).convert_alpha()
 side_img = pygame.transform.scale(pygame.image.load(os.path.join("game_assets","side.png")).convert_alpha(), (120, 500))
 
-buy_archer = pygame.transform.scale(pygame.image.load(os.path.join("game_assets","buy_archer.png")).convert_alpha(), (75, 75))
-buy_archer_2 = pygame.transform.scale(pygame.image.load(os.path.join("game_assets","buy_archer_2.png")).convert_alpha(), (75, 75))
+buy_archer = pygame.transform.scale(pygame.image.load(os.path.join("game_assets","buy_archer_4.png")).convert_alpha(), (75, 75))
+buy_archer_2 = pygame.transform.scale(pygame.image.load(os.path.join("game_assets","buy_archer_5.png")).convert_alpha(), (75, 75))
 #buy_damage = pygame.transform.scale(pygame.image.load(os.path.join("game_assets","buy_damage.png")).convert_alpha(), (75, 75))
 #buy_range = pygame.transform.scale(pygame.image.load(os.path.join("game_assets","buy_range.png")).convert_alpha(), (75, 75))
 
@@ -95,9 +95,6 @@ wave_bg = pygame.transform.scale(pygame.image.load(os.path.join("game_assets","w
 attack_tower_names = ["archer", "archer2"]
 support_tower_names = ["range", "damage"]
 
-# load music
-#pygame.mixer.music.load(os.path.join("game_assets", "music.mp3"))
-
 # waves are in form
 # frequency of enemies
 # (# scorpions, # wizards, # ogre)
@@ -108,9 +105,9 @@ waves = [
     [0, 20, 0],
     [0, 50, 0],
     [0, 100, 0],
-    [20, 100, 0],
-    [50, 100, 0],
-    [100, 100, 0],
+    [20, 100, 5],
+    [50, 100, 10],
+    [100, 100, 25],
     [0, 0, 50],
     [20, 0, 100],
     [20, 0, 150],
@@ -126,7 +123,7 @@ class Game:
         self.attack_towers = []
         self.support_towers = []
         self.tower_list = []
-        self.lives = 20
+        self.lives = 10
         self.money = 2000
         self.bg = pygame.image.load(os.path.join("game_assets", "bg.png"))
         self.bg = pygame.transform.scale(self.bg, (self.width, self.height))
@@ -146,6 +143,7 @@ class Game:
         self.playPauseButton = PlayPauseButton(play_btn, pause_btn, 10, self.height - 85)
         self.soundButton = PlayPauseButton(sound_btn, sound_btn_off, 90, self.height - 85)
         self.lose = True
+        tower_list = []
 
     def gen_enemies(self):
         """
@@ -225,60 +223,100 @@ class Game:
             numberOfEnemies = len(self.enemys)
             placeTower = False # bool - should we buy a tower or not
             
-            # HEREE
-            self.assignWeightHeuristics(placeTower, playerLife = self.lives, currentMoney = self.money, filledPositions = self.tower_list,  )
-    
-    
-    def assignWeightHeuristics(self, placeTower, playerLife, currentMoney, filledPositions):
-
-        emptyPositions = towerpositions
-
-        print(playerLife)
-        print(currentMoney)
-        print(filledPositions)
-        #print(emptyPositions)
-
-        self.add_tower(placeTower)
+            # self.assignWeightHeuristics(placeTower, playerLife = self.lives, currentMoney = self.money, filledPositions = self.tower_list)
+            self.add_tower(placeTower)
+            self.draw()
 
         
-        
+
     def add_tower(self, placeTower):
+        flag_tower750 = False
 
-    #AI inner working, should we buy tower or not , and the x and y calculation
-        if(self.money) > 500:   
-            '''RANDOMLY SELECT A POSITION FROM AVAIALABLE POSITIONS     
-            place = random.randint(0,len(towerpositions)-1)
-            x = (towerpositions[place])[0]
-            y = (towerpositions[place])[1]
-            del towerpositions[place]
-            '''
+        # AI inner working, should we buy tower or not , and the x and y calculation
+        if self.money > 500:
             
-            # Check which positions are closest to path:
+            max_combined = 0
+            weightList = []
             bestPos = []
-            for position in towerpositions:
-                #loop through all towerpositions against path positions and see which tower positions are one hop away
+
+            # Loop through all tower positions & check which position is the best option
+            for position in towerpositions: # Check which positions are closest to path
+
+                # Looping through path positions for each tower position & counting no. of path pieces right next to tower
                 numberOfOneHopPathPieces = 0
                 for pathCoordinate in path_positions:
-                    if distance(position,pathCoordinate) < 101: # Each square in the grid is 100 px
+                    if distance(position,pathCoordinate) < 145: # Each square in the grid is almost 100 px
                         numberOfOneHopPathPieces += 1
                 
                 bestPos.append(numberOfOneHopPathPieces)
-                
-            place = bestPos.index(max(bestPos))
+
+                # ASSIGN POSITION WEIGHTS BASED ON NO. OF PATH PIECES 1 HOP AWAY FROM CURRENT TOWER POSITION
+                if numberOfOneHopPathPieces >= 4:
+                    positionWeight = 5
+                elif numberOfOneHopPathPieces == 3:
+                    positionWeight = 4
+                elif numberOfOneHopPathPieces == 2:
+                    positionWeight = 3
+                elif numberOfOneHopPathPieces == 1:
+                    positionWeight = 2
+                elif numberOfOneHopPathPieces == 0:
+                    positionWeight = 1
+
+                # COUNT NO. OF NEIGHBOURS FOR EACH TOWER POSITION & ASSIGN (NEIGHBOUR) WEIGHTS
+                neighbour_count = 0
+                for tower in self.tower_list:
+                    if distance(position,tower) < 145: # Each square in the grid is 100 px
+                        neighbour_count += 1
+                if neighbour_count == 0:
+                    neighbourWeight = 2
+                elif neighbour_count == 1:
+                    neighbourWeight = 1
+                if neighbour_count >= 2:
+                    neighbourWeight = 0
+        
+                weightList.append([positionWeight, neighbourWeight]) 
+            
+            combinedWeightList = []
+            for weights in weightList:
+                combinedWeightList.append(weights[0] * weights[1])
+            
+            max_combined = max(combinedWeightList)
+            if max_combined ==  0:
+                flag_tower750 = True
+            
+            place = combinedWeightList.index(max_combined)
             x = (towerpositions[place])[0]
             y = (towerpositions[place])[1]
+                
+            
+            if flag_tower750:
+                if self.money >= 750:
+                    if bestPos[place] != 0:
+                        self.attack_towers.append(ArcherTowerShort(x,y))
+                        self.money -= 750
+                    else:
+                        self.attack_towers.append(ArcherTowerLong(x,y))
+                        self.money -= 750
 
-            # HEREE
-            self.tower_list.append([x,y])
+                    del towerpositions[place]
+                    del combinedWeightList[place]
+                    del weightList[place]
+                    placeTower = True   
 
-            del towerpositions[place]
-            del bestPos[place]
-            placeTower = True
-        if placeTower: 
-            self.attack_towers.append(ArcherTowerLong(x,y))
-            self.money -= 500
+                else:
+                    placeTower = False
+            else:
+                self.attack_towers.append(ArcherTowerLong(x,y))
+                self.money -= 500
 
-        self.draw()            
+                del towerpositions[place]
+                del combinedWeightList[place]
+                del weightList[place]
+                placeTower = True
+
+                if placeTower:
+                    self.tower_list.append([x,y])
+                
 
 
     def draw(self):
